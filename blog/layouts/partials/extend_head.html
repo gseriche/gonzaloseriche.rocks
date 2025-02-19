@@ -1,8 +1,24 @@
 <!-- layouts/partials/extend_head.html -->
-<!-- Cookie Consent -->
-<script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css">
+{{ if .Site.Params.googleTagManager }}
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','{{ .Site.Params.googleTagManager }}');</script>
+<!-- End Google Tag Manager -->
+
+<!-- Initialize dataLayer -->
 <script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+
+// Set default consent state
+gtag('consent', 'default', {
+  'analytics_storage': 'denied'
+});
+
+// Cookie consent integration
 window.addEventListener('load', function(){
     window.cookieconsent.initialise({
         "palette": {
@@ -15,37 +31,33 @@ window.addEventListener('load', function(){
                 "text": "#ffffff"
             }
         },
-        "theme": "classic",
         "type": "opt-in",
         "content": {
-            "message": "This website uses analytics cookies to help us understand how you use the site.",
+            "message": "This website uses cookies for analytics through Google Tag Manager.",
             "dismiss": "Decline",
             "allow": "Accept",
             "link": "Learn more",
             "href": "/privacy-policy"
+        },
+        onInitialise: function(status) {
+            var type = this.options.type;
+            var didConsent = this.hasConsented();
+            if (didConsent) {
+                gtag('consent', 'update', {
+                    'analytics_storage': 'granted'
+                });
+            }
+        },
+        onStatusChange: function(status, chosenBefore) {
+            var type = this.options.type;
+            var didConsent = this.hasConsented();
+            if (didConsent) {
+                gtag('consent', 'update', {
+                    'analytics_storage': 'granted'
+                });
+            }
         }
-    });
+    })
 });
 </script>
-
-<!-- Google Analytics - Only loads after consent -->
-{{ with site.Params.googleAnalytics }}
-<script>
-    // Function to load analytics
-    function loadAnalytics() {
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', '{{ . }}', { 'anonymize_ip': true });
-    }
-
-    // Check for cookie consent status
-    window.addEventListener('load', function() {
-        var cookieStatus = document.cookie.match('(^|;)\\s*cookieconsent_status\\s*=\\s*([^;]+)');
-        if (cookieStatus && cookieStatus[2] === 'allow') {
-            loadAnalytics();
-        }
-    });
-</script>
-<script async src="https://www.googletagmanager.com/gtag/js?id={{ . }}"></script>
 {{ end }}
