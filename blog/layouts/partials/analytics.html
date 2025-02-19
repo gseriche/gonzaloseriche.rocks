@@ -1,0 +1,8 @@
+<!-- layouts/partials/analytics.html -->
+{{ if not .Site.IsServer }}
+  {{ with .Site.GoogleAnalytics }}
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id={{ . }}"></script>
+  <!-- Google Analytics will be initialized after consent -->
+  {{ end }}
+{{ end }}

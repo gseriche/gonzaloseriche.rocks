@@ -1,0 +1,53 @@
+<!-- layouts/partials/cookie-consent.html -->
+<script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css">
+<script>
+window.addEventListener("load", function(){
+window.cookieconsent.initialise({
+  "palette": {
+    "popup": {
+      "background": "#000000",
+      "text": "#ffffff"
+    },
+    "button": {
+      "background": "#0051c3",
+      "text": "#ffffff"
+    }
+  },
+  "theme": "classic",
+  "type": "opt-in",
+  "content": {
+    "message": "This website uses analytics cookies to help us understand how you use the site.",
+    "dismiss": "Decline",
+    "allow": "Accept",
+    "link": "Learn more",
+    "href": "/privacy-policy"
+  },
+  onInitialise: function (status) {
+    var type = this.options.type;
+    var didConsent = this.hasConsented();
+    if (didConsent) {
+      // enable google analytics
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', '{{ .Site.GoogleAnalytics }}', {
+        'anonymize_ip': true
+      });
+    }
+  },
+  onStatusChange: function(status, chosenBefore) {
+    var type = this.options.type;
+    var didConsent = this.hasConsented();
+    if (didConsent) {
+      // enable google analytics when user accepts
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', '{{ .Site.GoogleAnalytics }}', {
+        'anonymize_ip': true
+      });
+    }
+  }
+})});
+</script>

@@ -1,0 +1,99 @@
+baseURL = "https://gonzaloseriche.rocks/"
+languageCode = "en-us"
+title = "Gonzalo Seriche: The DevOps that Rocks!"
+theme = "PaperMod"
+
+
+
+# Author information
+[[params.author]]
+name = "Gonzalo Seriche"
+email = "gonzalo.seriche@gmail.com"
+
+# Site parameters
+[params]
+# Enable dark mode
+defaultTheme = "auto"
+ShowReadingTime = true
+ShowShareButtons = true
+ShowPostNavLinks = true
+ShowBreadCrumbs = true
+ShowCodeCopyButtons = true
+ShowRssButtonInSectionTermList = true
+ShowToc = true
+# Enable Google Analytics
+googleAnalytics = "G-K45D566N7T"
+metaDataFormat = "yaml"
+
+# Profile mode parameters
+[params.profileMode]
+enabled = true
+title = "Gonzalo Seriche"
+subtitle = "Cloud Advocate | DevOps Engineer"
+# imageUrl = "/images/profile.jpg"
+
+[[params.profileMode.buttons]]
+name = "Blog"
+url = "/posts"
+
+[[params.profileMode.buttons]]
+name = "Certifications"
+url = "/certifications"
+
+[[params.profileMode.buttons]]
+name = "About"
+url = "/about"
+
+# Social Icons
+[[params.socialIcons]]
+name = "linkedin"
+url = "https://www.linkedin.com/in/gonzaloserichevega"
+
+[[params.socialIcons]]
+name = "github"
+url = "https://github.com/gseriche"
+
+# [[params.socialIcons]]
+# name = "medium"
+# url = "your-medium-url"
+
+# Home Info Mode parameters
+[params.homeInfoParams]
+Title = "DevOps that Rocks! 🚀"
+Content = """
+DevOps Engineer sharing real-world experiences
+and cloud engineering challenges.
+"""
+
+# Menu items
+[menu]
+[[menu.main]]
+identifier = "home"
+name = "Home"
+url = "/"
+weight = 10
+
+[[menu.main]]
+identifier = "blog"
+name = "Blog"
+url = "/posts/"
+weight = 20
+
+[[menu.main]]
+identifier = "certifications"
+name = "Certifications"
+url = "/certifications/"
+weight = 30
+
+[[menu.main]]
+identifier = "about"
+name = "About"
+url = "/about/"
+weight = 40
+
+[privacy]
+  [privacy.googleAnalytics]
+    anonymizeIP = true
+    disable = false
+    respectDoNotTrack = true
+    useSessionStorage = true
