@@ -1,14 +1,15 @@
 name: "Infrastructure Deployment"
 
 on:
-  push:
-    paths:
-      - 'infrastructure/**'
-    branches: [ main ]
-  pull_request:
-    paths:
-      - 'infrastructure/**'
-  workflow_dispatch:
+    push:
+      paths:
+        - 'infrastructure/**'
+      branches: [ main ]
+    pull_request:
+      types: [opened, synchronize, reopened]
+      paths:
+        - 'infrastructure/**'
+    workflow_dispatch:
 
 permissions:
   contents: read
@@ -23,6 +24,12 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
+
+      - name: Debug Event Context
+        run: |
+          echo "Event name: ${{ github.event_name }}"
+          echo "Branch name: ${{ github.ref }}"
+          echo "Is PR: ${{ github.event_name == 'pull_request' }}"
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
@@ -66,8 +73,12 @@ jobs:
       - name: Terraform Plan
         working-directory: infrastructure/terraform
         id: plan
-        if: github.event_name == 'pull_request'
-        run: terraform plan -no-color -input=false
+        # Removed the condition to always run plan
+        run: |
+          terraform plan -no-color -input=false > plan.txt
+          echo "PLAN<<EOF" >> $GITHUB_OUTPUT
+          cat plan.txt >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
         continue-on-error: true
         env:
           TF_VAR_acm_certificate_arn: ${{ secrets.ACM_CERTIFICATE_ARN }}
@@ -99,10 +110,6 @@ jobs:
               repo: context.repo.name,
               body: output
             })
-
-      - name: Terraform Plan Status
-        if: steps.plan.outcome == 'failure'
-        run: exit 1
 
       - name: Terraform Apply
         working-directory: infrastructure

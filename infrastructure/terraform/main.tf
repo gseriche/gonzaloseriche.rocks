@@ -7,7 +7,7 @@ terraform {
       version = "~> 5.0"
     }
   }
-  
+
   # It's important to store the state in S3 for team collaboration and state persistence
   backend "s3" {
     bucket = "terraform-state-gonzaloseriche"
@@ -18,7 +18,7 @@ terraform {
 
 provider "aws" {
   region = var.aws_region
-  
+
   # Adding default tags to all resources for better resource management
   default_tags {
     tags = {
@@ -78,9 +78,9 @@ resource "aws_s3_bucket_policy" "website" {
 # CloudFront distribution to serve the website
 resource "aws_cloudfront_distribution" "website" {
   enabled             = true
-  is_ipv6_enabled    = true
+  is_ipv6_enabled     = true
   default_root_object = "index.html"
-  aliases            = ["gonzaloseriche.rocks"]  # Add your domain here
+  aliases             = ["gonzaloseriche.rocks"] # Add your domain here
 
   origin {
     domain_name = aws_s3_bucket_website_configuration.website.website_endpoint
@@ -99,11 +99,11 @@ resource "aws_cloudfront_distribution" "website" {
     cached_methods         = ["GET", "HEAD"]
     target_origin_id       = "S3-${aws_s3_bucket.website.bucket}"
     viewer_protocol_policy = "redirect-to-https"
-    compress              = true
+    compress               = true
 
     forwarded_values {
       query_string = false
-      headers      = ["Host", "Origin"]  # Forward these headers
+      headers      = ["Host", "Origin"] # Forward these headers
       cookies {
         forward = "none"
       }
