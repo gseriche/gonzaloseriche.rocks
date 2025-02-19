@@ -91,6 +91,13 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
+            // Log repository information for debugging
+            console.log('Repository context:', {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pullNumber: context.payload.pull_request.number
+            });
+
             const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
             #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
             #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
@@ -106,8 +113,8 @@ jobs:
             
             await github.rest.pulls.createReview({
               owner: context.repo.owner,
-              repo: context.repo.name,
-              pull_number: context.issue.number,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number,
               body: output,
               event: 'COMMENT'
             });
