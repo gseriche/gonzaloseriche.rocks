@@ -104,12 +104,13 @@ jobs:
             
             </details>`;
             
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
+            await github.rest.pulls.createReview({
               owner: context.repo.owner,
               repo: context.repo.name,
-              body: output
-            })
+              pull_number: context.issue.number,
+              body: output,
+              event: 'COMMENT'
+            });
 
       - name: Terraform Apply
         working-directory: infrastructure
