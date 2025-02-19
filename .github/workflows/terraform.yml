@@ -1,14 +1,15 @@
 name: "Infrastructure Deployment"
 
 on:
-  push:
-    paths:
-      - 'infrastructure/**'
-    branches: [ main ]
-  pull_request:
-    paths:
-      - 'infrastructure/**'
-  workflow_dispatch:
+    push:
+      paths:
+        - 'infrastructure/**'
+      branches: [ main ]
+    pull_request:
+      types: [opened, synchronize, reopened]
+      paths:
+        - 'infrastructure/**'
+    workflow_dispatch:
 
 permissions:
   contents: read
@@ -23,6 +24,12 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
+
+      - name: Debug Event Context
+        run: |
+          echo "Event name: ${{ github.event_name }}"
+          echo "Branch name: ${{ github.ref }}"
+          echo "Is PR: ${{ github.event_name == 'pull_request' }}"
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
@@ -43,31 +50,35 @@ jobs:
           echo "Directory contents:"
           ls -la
           echo "Infrastructure directory contents:"
-          ls -la infrastructure/
+          ls -la infrastructure/terraform
 
       - name: Terraform Format
-        working-directory: infrastructure
+        working-directory: infrastructure/terraform
         id: fmt
         run: terraform fmt -check
         continue-on-error: true
 
       - name: Terraform Init
-        working-directory: infrastructure
+        working-directory: infrastructure/terraform
         id: init
         run: terraform init
         env:
           TF_VAR_acm_certificate_arn: ${{ secrets.ACM_CERTIFICATE_ARN }}
 
       - name: Terraform Validate
-        working-directory: infrastructure
+        working-directory: infrastructure/terraform
         id: validate
         run: terraform validate
 
       - name: Terraform Plan
-        working-directory: infrastructure
+        working-directory: infrastructure/terraform
         id: plan
-        if: github.event_name == 'pull_request'
-        run: terraform plan -no-color -input=false
+        # Removed the condition to always run plan
+        run: |
+          terraform plan -no-color -input=false > plan.txt
+          echo "PLAN<<EOF" >> $GITHUB_OUTPUT
+          cat plan.txt >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
         continue-on-error: true
         env:
           TF_VAR_acm_certificate_arn: ${{ secrets.ACM_CERTIFICATE_ARN }}
@@ -80,6 +91,13 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
+            // Log repository information for debugging
+            console.log('Repository context:', {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pullNumber: context.payload.pull_request.number
+            });
+
             const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
             #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
             #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
@@ -93,16 +111,13 @@ jobs:
             
             </details>`;
             
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
+            await github.rest.pulls.createReview({
               owner: context.repo.owner,
-              repo: context.repo.name,
-              body: output
-            })
-
-      - name: Terraform Plan Status
-        if: steps.plan.outcome == 'failure'
-        run: exit 1
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number,
+              body: output,
+              event: 'COMMENT'
+            });
 
       - name: Terraform Apply
         working-directory: infrastructure
