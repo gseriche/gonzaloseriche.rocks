@@ -5,9 +5,6 @@ on:
     paths:
       - 'infrastructure/**'
     branches: [ main ]
-  pull_request:
-    paths:
-      - 'infrastructure/**'
   workflow_dispatch:
 
 permissions:
