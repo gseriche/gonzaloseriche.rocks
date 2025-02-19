@@ -23,6 +23,7 @@ ShowRssButtonInSectionTermList = true
 ShowToc = true
 # Enable Google Analytics
 googleAnalytics = "G-K45D566N7T"
+googleTagManager = "GTM-WLFW9BX4"
 metaDataFormat = "yaml"
 
 # Profile mode parameters
