@@ -11,6 +11,7 @@ As an AWS enthusiast and infrastructure engineer, I want to share how I deployed
 ## Architecture Overview
 
 Our infrastructure includes:
+
 - S3 bucket for static content hosting
 - CloudFront for AWS content delivery
 - Cloudflare for DNS, SSL, and additional security
@@ -84,18 +85,25 @@ After applying the Terraform configuration, set up Cloudflare:
 ## Deployment Process
 
 1. Initialize and apply Terraform:
+
 ```bash
+
 terraform init
 terraform apply
+
 ```
 
 2. Build and upload Hugo site:
+
 ```bash
+
 hugo
 aws s3 sync public/ s3://gonzaloseriche.rocks/
+
 ```
 
 3. Verify Cloudflare configuration:
+
    - Check DNS propagation
    - Verify SSL certificate
    - Test CDN caching
@@ -103,6 +111,7 @@ aws s3 sync public/ s3://gonzaloseriche.rocks/
 ## Cost Breakdown
 
 This setup is cost-effective:
+
 - S3: ~$0.023 per GB/month
 - CloudFront: ~$0.085 per GB
 - Cloudflare: Free tier features
@@ -111,26 +120,34 @@ This setup is cost-effective:
 ## Maintenance and Updates
 
 ### Content Updates
+
 ```bash
+
 hugo
 aws s3 sync public/ s3://gonzaloseriche.rocks/ --delete
+
 ```
 
 ### Infrastructure Updates
+
 ```bash
+
 terraform plan
 terraform apply
+
 ```
 
 ## Security Features
 
 1. **Cloudflare Security**:
+
    - DDoS protection
    - Web Application Firewall
    - Bot protection
    - SSL encryption
 
 2. **AWS Security**:
+
    - CloudFront private content
    - S3 bucket policies
    - Region restriction options
@@ -146,7 +163,7 @@ terraform apply
 
 This infrastructure provides a robust, secure, and performant solution for hosting a Hugo site. By combining AWS and Cloudflare, we get the best of both worlds: reliable hosting and enhanced security.
 
-The complete Terraform configuration is available on [GitHub](https://github.com/gseriche).
+The complete Terraform configuration is available on [GitHub](https://github.com/gseriche/gonzaloseriche.rocks).
 
 ---
 
