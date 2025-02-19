@@ -120,7 +120,7 @@ jobs:
             });
 
       - name: Terraform Apply
-        working-directory: infrastructure
+        working-directory: infrastructure/terraform
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         run: terraform apply -auto-approve -input=false
         env:
