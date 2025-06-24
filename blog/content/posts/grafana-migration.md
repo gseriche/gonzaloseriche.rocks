@@ -11,6 +11,7 @@ As an AWS advocate and DevOps engineer, I often encounter challenges with managi
 ## The Challenge
 
 Managing monitoring dashboards across development, staging, and production environments can be tedious and error-prone. Manual migration often leads to:
+
 - Lost folder structures
 - Inconsistent configurations
 - Time-consuming processes
@@ -48,7 +49,7 @@ def import_dashboard(self, dashboard_json: Dict, folder_id: Optional[int] = None
     dashboard = dashboard_json['dashboard']
     dashboard['id'] = None
     dashboard['uid'] = None
-    
+
     payload = {
         'dashboard': dashboard,
         'overwrite': True,
