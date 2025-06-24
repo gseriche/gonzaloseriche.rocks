@@ -2,7 +2,6 @@
 title: "Construyendo un Webhook Inteligente con n8n y GPT"
 date: 2025-06-24T12:55:54
 draft: false
-categories: ["n8n", "automation", "openai", "webhook", "chatgpt"]
 author: Gonzalo Seriche
 tags: ["n8n", "automation", "openai", "webhook", "chatgpt"]
 ---
